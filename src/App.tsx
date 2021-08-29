@@ -4,6 +4,7 @@ import { ThemeProvider } from 'styled-components/native';
 import theme from '@styles/theme';
 import { NavigationContainer } from '@react-navigation/native';
 import { Routes } from './routes';
+
 import { StorageProvider } from '@hooks/storage';
 
 export function App() {

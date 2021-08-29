@@ -1,12 +1,21 @@
 import React, { createContext, useContext } from 'react';
 
-interface IStorageContext {}
+interface IStorageContext {
+  validUrl: (url: string) => boolean;
+}
 
 const StorageContext = createContext<IStorageContext>({} as IStorageContext);
 
 const StorageProvider: React.FC = ({ children }) => {
+  function validUrl(url: string) {
+    return /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/.test(
+      url,
+    );
+  }
   return (
-    <StorageContext.Provider value={{}}>{children}</StorageContext.Provider>
+    <StorageContext.Provider value={{ validUrl }}>
+      {children}
+    </StorageContext.Provider>
   );
 };
 
