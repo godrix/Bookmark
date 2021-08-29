@@ -1,8 +1,14 @@
+import { Header } from '@components/Header';
+import { Search } from '@components/Search';
 import React from 'react';
-import { View } from 'react-native';
 
-//import { Container } from './styles';
+import { Container } from './styles';
 
 export function Home() {
-  return <View />;
+  return (
+    <Container>
+      <Header />
+      <Search />
+    </Container>
+  );
 }
