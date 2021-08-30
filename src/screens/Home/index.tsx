@@ -1,17 +1,13 @@
 import { Header } from '@components/Header';
 import { Search } from '@components/Search';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useClipboard } from '@react-native-clipboard/clipboard';
 import { useIsFocused } from '@react-navigation/native';
 import ShareMenu, { ShareCallback } from 'react-native-share-menu';
-import { Container } from './styles';
+import { Container, Wrapper } from './styles';
 import { useStorage } from '@hooks/storage';
+import { PrivateLink } from '@components/PrivateLink';
 
-type SharedItem = {
-  mimeType: string;
-  data: string;
-  extraData: any;
-};
 export function Home() {
   const isFocused = useIsFocused();
   const { validUrl } = useStorage();
@@ -52,6 +48,11 @@ export function Home() {
     <Container>
       <Header />
       <Search />
+      <Wrapper>
+        <PrivateLink />
+        <PrivateLink />
+        <PrivateLink />
+      </Wrapper>
     </Container>
   );
 }
