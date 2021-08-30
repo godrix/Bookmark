@@ -16,7 +16,7 @@ export const Container = styled.View`
 `;
 
 export const Emoji = styled.Text`
-  font-size: ${RFValue(28)}px;
+  font-size: ${RFValue(24)}px;
 `;
 
 export const LinkInfo = styled.View`
@@ -30,6 +30,6 @@ export const LinkTitle = styled.Text`
 `;
 
 export const LinkUrl = styled.Text`
-  font-size: ${RFValue(12)}px;
+  font-size: ${RFValue(11)}px;
   color: ${({ theme }) => theme.colors.gray};
 `;

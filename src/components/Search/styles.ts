@@ -17,7 +17,10 @@ export const Container = styled.View`
   justify-content: space-between;
 `;
 
-export const Input = styled.TextInput`
+export const Input = styled.TextInput.attrs({
+  placeholderTextColor: '#999',
+})`
   padding-left: ${RFValue(30)}px;
   max-width: ${RFPercentage(45)}px;
+  color: ${({ theme }) => theme.colors.gray};
 `;
