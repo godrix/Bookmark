@@ -33,7 +33,7 @@ const StorageProvider: React.FC = ({ children }) => {
 
   async function createBookmark(uri: string, incognito: boolean = false) {
     try {
-      if (validUrl(uri)) {
+      if (!validUrl(uri)) {
         throw new Error('URI fornecida invalída!');
       }
       const [data] = await OpenGraphParser.extractMeta(uri);
@@ -54,20 +54,23 @@ const StorageProvider: React.FC = ({ children }) => {
 
       const { result_url } = await responsePost.json();
 
-      setBookMarks(prevState => [
-        {
-          url,
-          url_short: result_url,
-          hostname,
-          site_name,
-          image,
-          title,
-          description,
-          jump,
-          incognito,
-        },
-        ...prevState,
-      ]);
+      setBookMarks(
+        prevState =>
+          prevState && [
+            {
+              url,
+              url_short: result_url,
+              hostname,
+              site_name,
+              image,
+              title,
+              description,
+              jump,
+              incognito,
+            },
+            ...prevState,
+          ],
+      );
     } catch (error) {
       throw new Error(error);
     }
@@ -82,6 +85,18 @@ const StorageProvider: React.FC = ({ children }) => {
       console.log('bookmark saved');
     }
   }, [bookmarks]);
+
+  useEffect(() => {
+    async function loadStorageData() {
+      const bookMarkValue = await AsyncStorage.getItem('@bookmark:bookmarks');
+
+      const bookmarkInitial =
+        bookMarkValue !== null ? JSON.parse(bookMarkValue) : [];
+
+      setBookMarks(bookmarkInitial);
+    }
+    loadStorageData();
+  }, []);
 
   return (
     <StorageContext.Provider value={{ validUrl, createBookmark, bookmarks }}>

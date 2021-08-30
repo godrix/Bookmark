@@ -7,10 +7,11 @@ import ShareMenu, { ShareCallback } from 'react-native-share-menu';
 import { Container, Wrapper } from './styles';
 import { useStorage } from '@hooks/storage';
 import { PrivateLink } from '@components/PrivateLink';
+import { TouchableOpacity, Text } from 'react-native';
 
 export function Home() {
   const isFocused = useIsFocused();
-  const { validUrl, createBookmark } = useStorage();
+  const { validUrl, bookmarks, createBookmark } = useStorage();
   const [clipboard] = useClipboard();
 
   useEffect(() => {
@@ -45,15 +46,34 @@ export function Home() {
     };
   }, [handleShare]);
 
+  function createBookmarkHandler(url: string) {
+    createBookmark(url);
+  }
+
   return (
     <Container>
       <Header />
       <Search />
+
       <Wrapper>
-        <PrivateLink />
-        <PrivateLink />
-        <PrivateLink />
+        {bookmarks?.map(bookmark => (
+          <PrivateLink />
+        ))}
       </Wrapper>
+      <TouchableOpacity
+        style={{
+          width: 100,
+          height: 100,
+          backgroundColor: 'red',
+          position: 'absolute',
+        }}
+        onPress={() => {
+          createBookmarkHandler(
+            'http://conteudoweb.itajai.sc.gov.br/setec-mobile/conectai/blob/development/src/contexts/Storage/index.tsx',
+          );
+        }}>
+        <Text>cria um novo bookmark</Text>
+      </TouchableOpacity>
     </Container>
   );
 }
