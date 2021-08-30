@@ -10,7 +10,7 @@ import { PrivateLink } from '@components/PrivateLink';
 
 export function Home() {
   const isFocused = useIsFocused();
-  const { validUrl } = useStorage();
+  const { validUrl, createBookmark } = useStorage();
   const [clipboard] = useClipboard();
 
   useEffect(() => {
@@ -44,6 +44,7 @@ export function Home() {
       listener.remove();
     };
   }, [handleShare]);
+
   return (
     <Container>
       <Header />
