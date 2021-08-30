@@ -1,9 +1,11 @@
 import { Header } from '@components/Header';
 import { Search } from '@components/Search';
 import React, { useState, useEffect, useCallback } from 'react';
-
+import { useClipboard } from '@react-native-clipboard/clipboard';
+import { useIsFocused } from '@react-navigation/native';
 import ShareMenu, { ShareCallback } from 'react-native-share-menu';
 import { Container } from './styles';
+import { useStorage } from '@hooks/storage';
 
 type SharedItem = {
   mimeType: string;
@@ -11,7 +13,21 @@ type SharedItem = {
   extraData: any;
 };
 export function Home() {
-  const [sharedData, setSharedData] = useState<string | null>(null);
+  const isFocused = useIsFocused();
+  const { validUrl } = useStorage();
+  const [clipboard] = useClipboard();
+
+  useEffect(() => {
+    function checkClipboard() {
+      if (validUrl(clipboard)) {
+        alert(`${clipboard} é uma url para salvar?`);
+      }
+    }
+
+    if (isFocused) {
+      checkClipboard();
+    }
+  }, [clipboard, validUrl, isFocused]);
 
   const handleShare = useCallback<ShareCallback>(item => {
     if (!item) {
@@ -19,8 +35,6 @@ export function Home() {
     }
 
     const { data } = item;
-
-    setSharedData(data);
   }, []);
 
   useEffect(() => {
