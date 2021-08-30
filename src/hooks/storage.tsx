@@ -1,19 +1,28 @@
 import { API_SHORTEN } from '@env';
-import React, { createContext, useContext } from 'react';
-import {
-  OpenGraphAwareInput,
-  OpenGraphDisplay,
-  OpenGraphParser,
-} from 'react-native-opengraph-kit';
+import React, { createContext, useContext, useState } from 'react';
+import { OpenGraphParser } from 'react-native-opengraph-kit';
 
+interface IBookmarkDTO {
+  url: string;
+  url_short: string;
+  hostname: string;
+  site_name: string;
+  image: string;
+  title: string;
+  description: string;
+  jump: number;
+  incognito: boolean;
+}
 interface IStorageContext {
   validUrl: (url: string) => boolean;
   createBookmark: (url: string) => Promise<void>;
+  bookmarks: IBookmarkDTO[];
 }
 
 const StorageContext = createContext<IStorageContext>({} as IStorageContext);
 
 const StorageProvider: React.FC = ({ children }) => {
+  const [bookmarks, setBookMarks] = useState<IBookmarkDTO[]>([]);
   function validUrl(url: string) {
     return /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/.test(
       url,
@@ -40,23 +49,26 @@ const StorageProvider: React.FC = ({ children }) => {
 
       const { result_url } = await responsePost.json();
 
-      console.log('🌤️', {
-        url,
-        url_short: result_url,
-        hostname,
-        site_name,
-        image,
-        title,
-        description,
-        jump,
-        incognito,
-      });
+      setBookMarks(prevState => [
+        {
+          url,
+          url_short: result_url,
+          hostname,
+          site_name,
+          image,
+          title,
+          description,
+          jump,
+          incognito,
+        },
+        ...prevState,
+      ]);
     } catch (error) {
       console.log(error);
     }
   }
   return (
-    <StorageContext.Provider value={{ validUrl, createBookmark }}>
+    <StorageContext.Provider value={{ validUrl, createBookmark, bookmarks }}>
       {children}
     </StorageContext.Provider>
   );
