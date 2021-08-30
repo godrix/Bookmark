@@ -1,5 +1,7 @@
 import { API_SHORTEN } from '@env';
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { OpenGraphParser } from 'react-native-opengraph-kit';
 
 interface IBookmarkDTO {
@@ -16,13 +18,13 @@ interface IBookmarkDTO {
 interface IStorageContext {
   validUrl: (url: string) => boolean;
   createBookmark: (url: string) => Promise<void>;
-  bookmarks: IBookmarkDTO[];
+  bookmarks: IBookmarkDTO[] | null;
 }
 
 const StorageContext = createContext<IStorageContext>({} as IStorageContext);
 
 const StorageProvider: React.FC = ({ children }) => {
-  const [bookmarks, setBookMarks] = useState<IBookmarkDTO[]>([]);
+  const [bookmarks, setBookMarks] = useState<IBookmarkDTO[] | null>(null);
   function validUrl(url: string) {
     return /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/.test(
       url,
@@ -31,6 +33,9 @@ const StorageProvider: React.FC = ({ children }) => {
 
   async function createBookmark(uri: string, incognito: boolean = false) {
     try {
+      if (validUrl(uri)) {
+        throw new Error('URI fornecida invalída!');
+      }
       const [data] = await OpenGraphParser.extractMeta(uri);
 
       const { url, hostname, site_name, image, title, description } = data;
@@ -64,9 +69,20 @@ const StorageProvider: React.FC = ({ children }) => {
         ...prevState,
       ]);
     } catch (error) {
-      console.log(error);
+      throw new Error(error);
     }
   }
+
+  useEffect(() => {
+    if (bookmarks !== null) {
+      AsyncStorage.setItem(
+        '@bookmark:bookmarks',
+        JSON.stringify(bookmarks),
+      ).then();
+      console.log('bookmark saved');
+    }
+  }, [bookmarks]);
+
   return (
     <StorageContext.Provider value={{ validUrl, createBookmark, bookmarks }}>
       {children}
