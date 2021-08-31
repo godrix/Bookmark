@@ -9,6 +9,7 @@ import { useStorage } from '@hooks/storage';
 import { PrivateLink } from '@components/PrivateLink';
 import { TouchableOpacity, Text, FlatList } from 'react-native';
 import { PublicLink } from '@components/PublicLink';
+import { Modal } from '@components/Modal';
 
 export function Home() {
   const isFocused = useIsFocused();
@@ -60,7 +61,6 @@ export function Home() {
     <Container>
       <Header />
       <Search />
-
       <Wrapper>
         <FlatList
           data={bookmarks}
@@ -74,6 +74,7 @@ export function Home() {
           }
         />
       </Wrapper>
+      <Modal />
     </Container>
   );
 }
