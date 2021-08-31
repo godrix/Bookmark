@@ -8,31 +8,41 @@ import { Container, Wrapper } from './styles';
 import { useStorage } from '@hooks/storage';
 import { PrivateLink } from '@components/PrivateLink';
 import { TouchableOpacity, Text, FlatList } from 'react-native';
+import { PublicLink } from '@components/PublicLink';
 
 export function Home() {
   const isFocused = useIsFocused();
-  const { validUrl, bookmarks, createBookmark } = useStorage();
+  const { validUrl, bookmarks, createBookmark, setUrl4bookmark } = useStorage();
   const [clipboard] = useClipboard();
 
   useEffect(() => {
     function checkClipboard() {
       if (validUrl(clipboard)) {
-        alert(`${clipboard} é uma url para salvar?`);
+        setUrl4bookmark(clipboard);
       }
     }
 
     if (isFocused) {
       checkClipboard();
     }
-  }, [clipboard, validUrl, isFocused]);
+  }, [clipboard, validUrl, isFocused, setUrl4bookmark]);
 
-  const handleShare = useCallback<ShareCallback>(item => {
-    if (!item) {
-      return;
-    }
+  const handleShare = useCallback<ShareCallback>(
+    item => {
+      if (!item) {
+        return;
+      }
 
-    const { data } = item;
-  }, []);
+      const { data } = item;
+
+      console.log(data);
+
+      if (validUrl(data)) {
+        setUrl4bookmark(data);
+      }
+    },
+    [validUrl, setUrl4bookmark],
+  );
 
   useEffect(() => {
     ShareMenu.getInitialShare(handleShare);
@@ -46,10 +56,6 @@ export function Home() {
     };
   }, [handleShare]);
 
-  function createBookmarkHandler(url: string) {
-    createBookmark(url, true);
-  }
-
   return (
     <Container>
       <Header />
@@ -60,24 +66,14 @@ export function Home() {
           data={bookmarks}
           keyExtractor={item => String(item.id)}
           renderItem={({ item }) =>
-            item.incognito ? <PrivateLink data={item} /> : <></>
+            item.incognito ? (
+              <PrivateLink data={item} />
+            ) : (
+              <PublicLink data={item} />
+            )
           }
         />
       </Wrapper>
-      <TouchableOpacity
-        style={{
-          width: 100,
-          height: 100,
-          backgroundColor: 'red',
-          position: 'absolute',
-        }}
-        onPress={() => {
-          createBookmarkHandler(
-            'http://conteudoweb.itajai.sc.gov.br/setec-mobile/conectai/blob/development/src/contexts/Storage/index.tsx',
-          );
-        }}>
-        <Text>cria um novo bookmark</Text>
-      </TouchableOpacity>
     </Container>
   );
 }
