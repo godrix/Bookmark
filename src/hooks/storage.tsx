@@ -1,23 +1,14 @@
 import { API_SHORTEN } from '@env';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import uuid from 'react-native-uuid';
 
 import { OpenGraphParser } from 'react-native-opengraph-kit';
+import { IBookmarkDTO } from '@interfaces/dto';
 
-interface IBookmarkDTO {
-  url: string;
-  url_short: string;
-  hostname: string;
-  site_name: string;
-  image: string;
-  title: string;
-  description: string;
-  jump: number;
-  incognito: boolean;
-}
 interface IStorageContext {
   validUrl: (url: string) => boolean;
-  createBookmark: (url: string) => Promise<void>;
+  createBookmark: (uri: string, incognito: boolean) => Promise<void>;
   bookmarks: IBookmarkDTO[] | null;
 }
 
@@ -54,10 +45,13 @@ const StorageProvider: React.FC = ({ children }) => {
 
       const { result_url } = await responsePost.json();
 
+      const id = uuid.v4();
+
       setBookMarks(
         prevState =>
           prevState && [
             {
+              id,
               url,
               url_short: result_url,
               hostname,

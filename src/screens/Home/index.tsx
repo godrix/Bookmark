@@ -7,7 +7,7 @@ import ShareMenu, { ShareCallback } from 'react-native-share-menu';
 import { Container, Wrapper } from './styles';
 import { useStorage } from '@hooks/storage';
 import { PrivateLink } from '@components/PrivateLink';
-import { TouchableOpacity, Text } from 'react-native';
+import { TouchableOpacity, Text, FlatList } from 'react-native';
 
 export function Home() {
   const isFocused = useIsFocused();
@@ -47,7 +47,7 @@ export function Home() {
   }, [handleShare]);
 
   function createBookmarkHandler(url: string) {
-    createBookmark(url);
+    createBookmark(url, true);
   }
 
   return (
@@ -56,9 +56,13 @@ export function Home() {
       <Search />
 
       <Wrapper>
-        {bookmarks?.map(bookmark => (
-          <PrivateLink />
-        ))}
+        <FlatList
+          data={bookmarks}
+          keyExtractor={item => String(item.id)}
+          renderItem={({ item }) =>
+            item.incognito ? <PrivateLink data={item} /> : <></>
+          }
+        />
       </Wrapper>
       <TouchableOpacity
         style={{

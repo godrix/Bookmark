@@ -29,7 +29,9 @@ export const LinkTitle = styled.Text`
   font-size: ${RFValue(18)}px;
 `;
 
-export const LinkUrl = styled.Text`
+export const LinkUrl = styled.Text.attrs({
+  numberOfLines: 1,
+})`
   font-size: ${RFValue(11)}px;
   color: ${({ theme }) => theme.colors.gray};
 `;
