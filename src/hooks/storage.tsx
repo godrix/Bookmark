@@ -21,6 +21,7 @@ interface IStorageContext {
   bookmarks: IBookmarkDTO[] | null;
   url4bookmark: string;
   setUrl4bookmark: (uri: string) => void;
+  isRepeted: (uri: string) => boolean;
 }
 
 const StorageContext = createContext<IStorageContext>({} as IStorageContext);
@@ -35,6 +36,15 @@ const StorageProvider: React.FC = ({ children }) => {
     );
   }, []);
 
+  const isRepeted = useCallback(
+    url => {
+      const repeted = bookmarks?.find(bookmark => bookmark.url === url);
+
+      return !!repeted;
+    },
+    [bookmarks],
+  );
+
   const createBookmark = useCallback(
     async (uri: string, incognito: boolean = false) => {
       console.log('criando bookmark');
@@ -43,7 +53,7 @@ const StorageProvider: React.FC = ({ children }) => {
           throw new Error('Erro_Code_0');
         }
 
-        const repeatedUrl = bookmarks?.find(bookmark => bookmark.url === uri);
+        const repeatedUrl = isRepeted(uri);
 
         if (repeatedUrl) {
           throw new Error('Erro_Code_1');
@@ -95,7 +105,7 @@ const StorageProvider: React.FC = ({ children }) => {
         });
       }
     },
-    [validUrl, bookmarks],
+    [validUrl, isRepeted],
   );
 
   useEffect(() => {
@@ -126,6 +136,7 @@ const StorageProvider: React.FC = ({ children }) => {
         validUrl,
         createBookmark,
         bookmarks,
+        isRepeted,
         url4bookmark,
         setUrl4bookmark,
       }}>
