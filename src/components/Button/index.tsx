@@ -1,8 +1,17 @@
 import React from 'react';
-import { View } from 'react-native';
+import { TouchableOpacityProps } from 'react-native';
 
-import { Container } from './styles';
+import { Container, Label } from './styles';
 
-export function Button() {
-  return <Container />;
+interface IButtonProps extends TouchableOpacityProps {
+  value: string;
+  onPress: () => void;
+}
+
+export function Button({ value, onPress }: IButtonProps) {
+  return (
+    <Container onPress={onPress}>
+      <Label>{value}</Label>
+    </Container>
+  );
 }

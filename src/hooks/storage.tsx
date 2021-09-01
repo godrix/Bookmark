@@ -11,6 +11,7 @@ import uuid from 'react-native-uuid';
 
 import { OpenGraphParser } from 'react-native-opengraph-kit';
 import { IBookmarkDTO } from '@interfaces/dto';
+import { features } from 'node:process';
 
 interface IStorageContext {
   validUrl: (url: string) => boolean;
@@ -27,13 +28,14 @@ const StorageProvider: React.FC = ({ children }) => {
   const [url4bookmark, setUrl4bookmark] = useState('');
 
   const validUrl = useCallback((url: string) => {
-    return /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/.test(
+    return /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/.test(
       url,
     );
   }, []);
 
   const createBookmark = useCallback(
     async (uri: string, incognito: boolean = false) => {
+      console.log('criando bookmark');
       try {
         if (!validUrl(uri)) {
           throw new Error('URI fornecida invalída!');
@@ -44,17 +46,9 @@ const StorageProvider: React.FC = ({ children }) => {
 
         const jump = Math.floor(Math.random() * 100) + 1;
 
-        const responsePost = await fetch(API_SHORTEN, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            url,
-          }),
-        });
+        const responsePost = await fetch(`${API_SHORTEN}${url}`);
 
-        const { result_url } = await responsePost.json();
+        const { shorturl } = await responsePost.json();
 
         const id = String(uuid.v4());
 
@@ -64,7 +58,7 @@ const StorageProvider: React.FC = ({ children }) => {
               {
                 id,
                 url,
-                url_short: result_url,
+                url_short: shorturl,
                 hostname,
                 site_name,
                 image,
@@ -77,7 +71,7 @@ const StorageProvider: React.FC = ({ children }) => {
             ],
         );
       } catch (error) {
-        throw new Error(error);
+        console.error(error);
       }
     },
     [validUrl],

@@ -24,7 +24,9 @@ export const LinkInfo = styled.View`
   margin-left: ${RFValue(18)}px;
 `;
 
-export const LinkTitle = styled.Text`
+export const LinkTitle = styled.Text.attrs({
+  numberOfLines: 1,
+})`
   font-weight: bold;
   font-size: ${RFValue(18)}px;
 `;

@@ -16,3 +16,10 @@ export const Form = styled.View`
 
   padding: ${RFValue(15)}px;
 `;
+
+export const TypeForm = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: ${RFValue(8)}px;
+  margin-bottom: ${RFValue(15)}px;
+`;

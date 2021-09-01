@@ -1,12 +1,18 @@
-import { RFValue } from 'react-native-responsive-fontsize';
 import styled from 'styled-components/native';
+import { RFValue } from 'react-native-responsive-fontsize';
 
-export const Container = styled.View`
+export const Container = styled.TouchableOpacity.attrs({
+  activeOpacity: 0.6,
+})`
   width: 100%;
-  height: ${RFValue(60)}px;
   background: ${({ theme }) => theme.colors.primary};
+  border-radius: 5px;
+  align-items: center;
+  padding: ${RFValue(14)}px;
+`;
 
-  border-radius: ${RFValue(6)}px;
-
-  margin: ${RFValue(10)}px 0;
+export const Label = styled.Text`
+  color: ${({ theme }) => theme.colors.shape};
+  font-size: ${RFValue(18)}px;
+  font-weight: bold;
 `;

@@ -19,6 +19,7 @@ export function Home() {
   useEffect(() => {
     function checkClipboard() {
       if (validUrl(clipboard)) {
+        console.log('via:api clipboard', clipboard);
         setUrl4bookmark(clipboard);
       }
     }
@@ -36,7 +37,7 @@ export function Home() {
 
       const { data } = item;
 
-      console.log(data);
+      console.log('via:api share', data);
 
       if (validUrl(data)) {
         setUrl4bookmark(data);
