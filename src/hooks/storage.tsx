@@ -9,9 +9,11 @@ import React, {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'react-native-uuid';
 
+import Snackbar from 'react-native-snackbar';
 import { OpenGraphParser } from 'react-native-opengraph-kit';
 import { IBookmarkDTO } from '@interfaces/dto';
 import { features } from 'node:process';
+import { Error_Code } from '@utils/error_code';
 
 interface IStorageContext {
   validUrl: (url: string) => boolean;
@@ -38,13 +40,13 @@ const StorageProvider: React.FC = ({ children }) => {
       console.log('criando bookmark');
       try {
         if (!validUrl(uri)) {
-          throw new Error('URI fornecida invalída!');
+          throw new Error('Erro_Code_0');
         }
 
         const repeatedUrl = bookmarks?.find(bookmark => bookmark.url === uri);
 
         if (repeatedUrl) {
-          throw new Error('URL já está salva no seu Bookmark!');
+          throw new Error('Erro_Code_1');
         }
         const [data] = await OpenGraphParser.extractMeta(uri);
 
@@ -76,8 +78,21 @@ const StorageProvider: React.FC = ({ children }) => {
               ...prevState,
             ],
         );
+        setUrl4bookmark('');
       } catch (error) {
-        throw new Error(error);
+        const error_code = Error_Code[String(error?.message) || 'Erro_Code_2'];
+        console.log('sssssss', error_code);
+        Snackbar.show({
+          text: error_code,
+          duration: Snackbar.LENGTH_INDEFINITE,
+          action: {
+            text: 'OK',
+            textColor: 'green',
+            onPress: () => {
+              /* Do something. */
+            },
+          },
+        });
       }
     },
     [validUrl, bookmarks],

@@ -4,7 +4,6 @@ import { TypeButton } from '@components/TypeButton';
 import { useStorage } from '@hooks/storage';
 import React, { useState } from 'react';
 import { StatusBar } from 'react-native';
-import { View } from 'react-native';
 
 import { Container, Form, Rest, TypeForm } from './styles';
 
@@ -15,10 +14,7 @@ export function Modal() {
   );
 
   function handleSubmit() {
-    try {
-      createBookmark(url4bookmark, selectedType === 'private');
-      setUrl4bookmark('');
-    } catch (error) {}
+    createBookmark(url4bookmark, selectedType === 'private');
   }
 
   function handleTypeSelect(type: 'public' | 'private') {
