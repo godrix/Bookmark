@@ -40,6 +40,12 @@ const StorageProvider: React.FC = ({ children }) => {
         if (!validUrl(uri)) {
           throw new Error('URI fornecida invalída!');
         }
+
+        const repeatedUrl = bookmarks?.find(bookmark => bookmark.url === uri);
+
+        if (repeatedUrl) {
+          throw new Error('URL já está salva no seu Bookmark!');
+        }
         const [data] = await OpenGraphParser.extractMeta(uri);
 
         const { url, hostname, site_name, image, title, description } = data;
@@ -71,10 +77,10 @@ const StorageProvider: React.FC = ({ children }) => {
             ],
         );
       } catch (error) {
-        console.error(error);
+        throw new Error(error);
       }
     },
-    [validUrl],
+    [validUrl, bookmarks],
   );
 
   useEffect(() => {

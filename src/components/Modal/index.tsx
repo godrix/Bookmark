@@ -15,8 +15,10 @@ export function Modal() {
   );
 
   function handleSubmit() {
-    createBookmark(url4bookmark, selectedType === 'private');
-    setUrl4bookmark('');
+    try {
+      createBookmark(url4bookmark, selectedType === 'private');
+      setUrl4bookmark('');
+    } catch (error) {}
   }
 
   function handleTypeSelect(type: 'public' | 'private') {
